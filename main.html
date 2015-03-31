@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+
+<head> Class Calendar 
+<br><br> 
+
+	
+	<meta charset="utf-8" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+	<script src="main.js"></script>
+</head>
+
+<body>
+
+<form>
+Subject Code <br>
+<input type="text" id="subjectCode" name="subjectCode"/>
+<br><br>
+Course Number <br>
+<input type="text" id="courseNumber" name="courseNumber"/>
+<br><br>
+Index Number <br>
+<input type="text" id="indexNumber" name="indexNumber"/>
+<br><br>
+<input type="button" value="submit" onClick="getData()" />
+</form>
+
+
+
+<script type="text/javascript" charset="utf-8">
+	
+var subject = document.getElementById('subjectCode');
+var course = document.getElementById('courseNumber');
+var index = document.getElementById('indexNumber');
+var json = ".json"; 
+
+
+   function getData (){
+	window.onload = $.getJSON(subject.value.concat(json), function(data) {
+		  console.log(data);
+		var dataStructures = getObjects(data, 'courseNumber', course.value);
+			console.log(dataStructures);
+		var indexNumber = getObjects(dataStructures, 'index', index.value);
+			console.log(indexNumber);
+		var pmMeetings = getObjects(indexNumber, 'pmCode', 'P');
+			console.log(pmMeetings);
+		var amMeetings = getObjects(indexNumber, 'pmCode', 'A');
+			console.log(amMeetings);
+		
+		$.each(pmMeetings, function(key, value){
+			console.log(value);
+		})
+	})
+   }
+	
+	</script>
+
+
+</body>
+
+
+
+
+</html>
