@@ -7,6 +7,7 @@
 	
 	<meta charset="utf-8" />
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+	<script src="https://apis.google.com/js/client.js?onload=OnLoadCallback"></script>
 	<script src="main.js"></script>
 </head>
 
@@ -25,6 +26,7 @@ Index Number <br>
 <input type="button" value="submit" onClick="getData()" />
 </form>
 
+<button id="authorize-button" onclick='handleAuthClick();'>Login</button>
 
 
 <script type="text/javascript" charset="utf-8">
@@ -46,8 +48,12 @@ var json = ".json";
 			console.log(pmMeetings);
 		var amMeetings = getObjects(indexNumber, 'pmCode', 'A');
 			console.log(amMeetings);
-		
+		//var start = getObjects(pmMeetings, 'startTime' '0');
+			
 		$.each(pmMeetings, function(key, value){
+			console.log(value.endTime);
+		})
+		$.each(amMeetings, function(key, value){
 			console.log(value);
 		})
 	})
@@ -55,6 +61,58 @@ var json = ".json";
 	
 	</script>
 
+<script type="text/javascript" charset="utf-8">
+
+var clientId = "455926068905-vk2a57fcfuh06daib5d8h6jes4unq54j.apps.googleusercontent.com";
+var scopes = "https://www.googleapis.com/auth/calendar";
+var apiKey = "AIzaSyAc628RFNWxZAeZZy0O1BtI64TYtDo7PrQ";
+
+	function handleClientLoad() {
+	  gapi.client.setApiKey(apiKey);
+	  window.setTimeout(checkAuth,1);
+	  checkAuth();
+	}
+
+	function checkAuth() {
+	  gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true},
+	      handleAuthResult);
+	}
+
+	function handleAuthResult(authResult) {
+	  var authorizeButton = document.getElementById('authorize-button');
+	  if (authResult) {
+	    authorizeButton.style.visibility = 'hidden';
+	    makeApiCall();
+	  } else {
+	    authorizeButton.style.visibility = '';
+	    authorizeButton.onclick = handleAuthClick;
+	   }
+	}
+
+	function handleAuthClick(event) {
+	  gapi.auth.authorize(
+	      {client_id: clientId, scope: scopes, immediate: false},
+	      handleAuthResult);
+	  return false;
+	}
+
+	function makeApiCall() {
+	  gapi.client.load('calendar', 'v3', function() {
+	    var request = gapi.client.calendar.events.list({
+	      'calendarId': 'primary'
+	    });
+	          
+	    request.execute(function(resp) {
+	      for (var i = 0; i < resp.items.length; i++) {
+	        var li = document.createElement('li');
+	        li.appendChild(document.createTextNode(resp.items[i].summary));
+	        document.getElementById('events').appendChild(li);
+	      }
+	    });
+	  });
+	}
+
+</script>
 
 </body>
 
