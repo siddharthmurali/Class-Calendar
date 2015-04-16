@@ -30,12 +30,17 @@ Index Number <br>
 
 
 <script type="text/javascript" charset="utf-8">
-	
+var timeout;
 var subject = document.getElementById('subjectCode');
 var course = document.getElementById('courseNumber');
 var index = document.getElementById('indexNumber');
 var json = ".json"; 
-
+var endTime="";
+var startTime="";
+var day=";"
+var d = new Date();
+var n = d.toISOString;
+console.log(n);
 
    function getData (){
 	window.onload = $.getJSON(subject.value.concat(json), function(data) {
@@ -51,18 +56,62 @@ var json = ".json";
 		//var start = getObjects(pmMeetings, 'startTime' '0');
 			
 		$.each(pmMeetings, function(key, value){
-			console.log(value.endTime);
+			endTime = value.endTime;
+			startTime = value.startTime;
+			day = value.meetingDay;
+			endTime = endTime.concat("pm");
+			startTime= startTime.concat("pm");
+			
+			if(day.length == 1 && day.charAt(0) == 'T'){
+				day = "2015-04-21";
+				
+			}
+			if(day.length == 2 && day.charAt(0) == 'T'){
+				day = day = "2015-04-23";
+				
+			}
+			if(day.length == 1 && day.charAt(0) == 'M'){
+				day = day = "2015-04-20";
+				
+			}
+			if(day.length == 1 && day.charAt(0) == 'F'){
+				day = day = "2015-04-24";
+				
+			}
+			if(day.length == 1 && day.charAt(0) == 'W'){
+				day = day = "2015-04-22";
+				
+			}
+			
+			console.log(endTime);
+			console.log(startTime);
+			console.log(day);
+			
+			
 		})
 		$.each(amMeetings, function(key, value){
 			console.log(value);
 		})
 	})
    }
-	
+   
+   
+   
 	</script>
 
 <script type="text/javascript" charset="utf-8">
-
+	
+	//function time(){
+		//timeout = setTimeout(test, 3000);
+	//}
+	
+	function test(){
+		console.log(startTime);
+		console.log(endTime);
+		console.log(day);
+	}
+	
+	
 var clientId = "455926068905-vk2a57fcfuh06daib5d8h6jes4unq54j.apps.googleusercontent.com";
 var scopes = "https://www.googleapis.com/auth/calendar";
 var apiKey = "AIzaSyAc628RFNWxZAeZZy0O1BtI64TYtDo7PrQ";
@@ -98,22 +147,45 @@ var apiKey = "AIzaSyAc628RFNWxZAeZZy0O1BtI64TYtDo7PrQ";
 
 	function makeApiCall() {
 	  gapi.client.load('calendar', 'v3', function() {
-	    var request = gapi.client.calendar.events.list({
-	      'calendarId': 'primary'
+		
+		  var resource = {
+				"summary": "ClassTest",
+				"location": "Rutgers",
+				"start": {
+					"date": day,
+					//"dateTime": startTime,
+					//"timeZone": "America/New_York"
+				},
+				"end": {
+					"date": day,
+					//"dateTime": endTime,
+					//"timeZone": "America/New_York"
+				}
+				
+				
+				
+		};
+		
+	    var request = gapi.client.calendar.events.insert({
+	      'calendarId': 'pgpf1jslpvjq2i611jlnjsu1cc@group.calendar.google.com',
+	      'resource': resource
+	      
 	    });
 	          
 	    request.execute(function(resp) {
-	      for (var i = 0; i < resp.items.length; i++) {
-	        var li = document.createElement('li');
-	        li.appendChild(document.createTextNode(resp.items[i].summary));
-	        document.getElementById('events').appendChild(li);
-	      }
+	      //for (var i = 0; i < resp.items.length; i++) {
+	        //var li = document.createElement('li');
+	        //li.appendChild(document.createTextNode(resp.items[i].summary));
+	        //document.getElementById('events').appendChild(li);
+	      //}
 	    });
 	  });
 	}
 
+	
+	
 </script>
-
+<script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
 </body>
 
 
